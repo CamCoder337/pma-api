@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseBadRequest
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework.permissions import IsAuthenticated
 
 from .models import CustomUser
 
@@ -66,3 +67,19 @@ class LogoutView(TokenViewBase, APIView):
                 return Response({"detail": "Error during disconnection."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"detail": "RefreshTocken required to Disconnection."}, status=status.HTTP_400_BAD_REQUEST)
+        
+class GetAuthenticatedUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user  # getting auth user via request.user
+
+        # Serialize data
+        serialized_user_data = {
+            'id': user.id,
+            'email': user.email,
+            'is_active': user.is_active,
+            'is_staff': user.is_staff,
+        }
+
+        return Response(serialized_user_data, status=status.HTTP_200_OK)
