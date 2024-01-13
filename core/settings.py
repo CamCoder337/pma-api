@@ -134,5 +134,5 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 DEFAULT_FROM_EMAIL ='camcoder337@gmail.com'
 EMAIL_HOST_USER='camcoder337@gmail.com'
-EMAIL_HOST_PASSWORD='app-password'
+EMAIL_HOST_PASSWORD='lbxr vtvw kfuj duci'
 
