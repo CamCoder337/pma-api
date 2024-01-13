@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 from django.conf import settings
 
+from .utils import generate_code
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -39,8 +41,7 @@ class CustomUser(AbstractBaseUser):
     USERNAME_FIELD = 'email'
 
     def generate_authentication_code(self):
-        # Generate Auth Code
-        return '123456'
+        return generate_code(8)
 
     def send_authentication_code(self):
         # Send new Auth code by email
