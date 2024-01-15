@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os, environ
 from pathlib import Path
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,14 +26,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1g&5^6dcj#k^2y!x@&(=-4a-^9%fa3w$zx+(iy6cxxjmggypt6'
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-1g&5^6dcj#k^2y!x@&(=-4a-^9%fa3w$zx+(iy6cxxjmggypt6')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+try:
+    # expects 1 or 0
+    DEBUG = int(os.environ.get("DEBUG", default=0))
+except:
+    DEBUG = False
 
-
+ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS", default="*").split(" ")
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,9 +47,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
+    "rest_framework",
+    "api",
+    "api.user",
+    "api.authentication",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,9 +90,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE"  : env("DB_ENGINE"  , default="django.db.backends.sqlite3"),
+        "NAME"    : env("DB_DATABASE", default=os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER"    : env("DB_USER"    , default=None),
+        "PASSWORD": env("DB_PASSWORD", default=None),
+        "HOST"    : env("DB_HOST"    , default=None),
+        "PORT"    : env("DB_PORT"    , default=None),
     }
 }
 
@@ -121,3 +141,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user Model
+AUTH_USER_MODEL = "api_user.User"
+
+# ##################################################################### #
+# ################### REST FRAMEWORK             ###################### #
+# ##################################################################### #
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "api.authentication.backends.ActiveSessionAuthentication",
+    ),
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+}
+
+# ##################################################################### #
+#  CORS 
+# ##################################################################### #
+
+CORS_ALLOW_ALL_ORIGINS=True
+
+# Load the default ones
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+# Leaded from Environment
+CORS_ALLOWED_ORIGINS_ENV = env("CORS_ALLOWED_ORIGINS", default=None)
+
+if CORS_ALLOWED_ORIGINS_ENV:
+    CORS_ALLOWED_ORIGINS += CORS_ALLOWED_ORIGINS_ENV.split(' ')
+
+
+# ##################################################################### #
+#  TESTING 
+# ##################################################################### #
+
+TESTING = False
+TEST_RUNNER = "core.test_runner.CoreTestRunner"
