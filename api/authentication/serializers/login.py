@@ -59,5 +59,5 @@ class LoginSerializer(serializers.Serializer):
         return {
             "success": True,
             "token": session.token,
-            "user": {"_id": user.pk, "username": user.username, "email": user.email},
+            "user": {"_id": user.pk, "username": user.username, "email": user.email, "admin": user.is_staff},
         }
