@@ -34,7 +34,7 @@ $ pip3 install -r requirements.txt
 
 > Setting up .env files
 <br />
-Set them up according to your needs 🙂
+Set them up according to your needs (Check the sample) 🙂
 
 <br />
 
@@ -45,10 +45,13 @@ $ python manage.py migrate
 ```
 <br />
 
-> Start the APP
+> Start the API Server
 ```bash
-$ python manage.py createsuperuser # create the admin
-$ python manage.py runserver       # start the project
+$ python manage.py runserver 5000     # start api
 ```
+
+Use the API via `POSTMAN` or `Swagger Dashboard` at `localhost:5000`.
+
+<br />
 
 ### [PMA-API] - provided **[Camcoder337](https://ftdev.me/)**.
