@@ -14,6 +14,8 @@ Django API to manage Roles during Prosit sessions.
 
 - ✅ `Prosit Reports Generation`
 
+- ✅ `Using Docker`
+
 <br />
 
 ## Manual Build
