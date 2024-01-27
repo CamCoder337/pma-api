@@ -17,7 +17,7 @@ class PrositGroup(models.Model):
     semester = models.ForeignKey(Semester,on_delete=models.CASCADE)
 
 class PrositStudent(models.Model):
-    prositGroup = models.ForeignKey(PrositGroup)
+    prositGroup = models.ForeignKey(PrositGroup, on_delete=models.CASCADE)
     student = models.ForeignKey("api_user.User", on_delete=models.CASCADE)
 
 class PrositRole(models.Model):
